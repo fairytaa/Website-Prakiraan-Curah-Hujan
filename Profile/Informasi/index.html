@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prakiraan Curah Hujan di Indonesia</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background-color: #f8d0f0;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      background-color: #ff8c00;
+      color: white;
+      padding: 30px;
+      text-align: center;
+      border-radius: 10px;
+      width: 100%;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+
+    header h1 {
+      font-size: 2.5em;
+      margin: 0;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .content {
+      width: 90%;
+      max-width: 800px;
+      background-color: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .section {
+      background-color: #ffe4b5;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .section h2 {
+      font-size: 1.8em;
+      color: #ff4500;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .section p, .section ul {
+      font-size: 1.2em;
+      line-height: 1.5;
+    }
+
+    .section ul {
+      list-style-type: square;
+      margin-left: 20px;
+    }
+
+    .icon {
+      font-size: 60px;
+      margin-top: 10px;
+      text-align: center;
+      animation: bounce 1s infinite alternate;
+    }
+
+    .section ul li {
+      padding: 5px 0;
+    }
+
+    .tips {
+      background-color: #ffeb3b;
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .tips h3 {
+      font-size: 1.5em;
+      color: #ff4500;
+      margin-bottom: 10px;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 10px;
+      background-color: #ff8c00;
+      color: white;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      font-size: 0.9em;
+    }
+
+    .footer a {
+      text-decoration: none;
+      color: #fff;
+      font-weight: bold;
+    }
+
+    @keyframes bounce {
+      0% {
+        transform: translateY(0);
+      }
+      100% {
+        transform: translateY(-20px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Prakiraan Curah Hujan di Indonesia</h1>
+    <div class="icon">☔</div>
+  </header>
+
+  <div class="content">
+    <div class="section">
+      <h2>Musim Hujan & Kemarau</h2>
+      <p>Indonesia memiliki dua musim utama: musim hujan dan musim kemarau. Musim hujan biasanya terjadi antara bulan November hingga Maret, sedangkan musim kemarau terjadi antara April hingga Oktober. Curah hujan bervariasi tergantung pada lokasi geografis.</p>
+      <div class="icon">🌧️</div>
+    </div>
+
+    <div class="section">
+      <h2>Faktor yang Mempengaruhi Curah Hujan</h2>
+      <ul>
+        <li><strong>Topografi:</strong> Daerah pegunungan cenderung lebih banyak hujan dibandingkan dataran rendah.</li>
+        <li><strong>Fenomena Alam:</strong> El Niño dan La Niña bisa mempengaruhi pola hujan.</li>
+        <li><strong>Lokasi Geografis:</strong> Indonesia yang dekat dengan ekuator mengalami hujan merata sepanjang tahun.</li>
+      </ul>
+      <div class="icon">🌍</div>
+    </div>
+
+    <div class="section">
+      <h2>Prakiraan Curah Hujan Berdasarkan Wilayah</h2>
+      <ul>
+        <li><strong>Sumatera:</strong> Curah hujan tinggi, terutama di wilayah barat.</li>
+        <li><strong>Jawa:</strong> Curah hujan tinggi di bagian selatan dan barat.</li>
+        <li><strong>Kalimantan:</strong> Curah hujan cukup merata sepanjang tahun.</li>
+        <li><strong>Sulawesi:</strong> Hujan lebat pada musim hujan, curah hujan lebih dari 2000 mm/tahun.</li>
+        <li><strong>Papua:</strong> Curah hujan sangat tinggi, beberapa daerah mencapai lebih dari 4000 mm/tahun.</li>
+        <li><strong>Nusa Tenggara:</strong> Lebih kering, dengan curah hujan rendah di Nusa Tenggara Timur.</li>
+      </ul>
+      <div class="icon">🌦️</div>
+    </div>
+
+    <div class="tips">
+      <h3>Tips Menghadapi Curah Hujan Tinggi</h3>
+      <ul>
+        <li><strong>Periksa Prakiraan Cuaca:</strong> Pastikan cuaca hari ini aman untuk beraktivitas.</li>
+        <li><strong>Bersiap untuk Banjir:</strong> Pastikan saluran air lancar agar tidak terjadi genangan.</li>
+        <li><strong>Lindungi Infrastruktur:</strong> Periksa atap dan saluran air di rumah.</li>
+        <li><strong>Hindari Perjalanan di Wilayah Rawan Banjir:</strong> Jika ada peringatan banjir, lebih baik menunda perjalanan.</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>&copy; 2024 Prakiraan Curah Hujan Indonesia | Data dari <a href="https://www.bmkg.go.id/" target="_blank">BMKG</a></p>
+  </footer>
+</body>
+</html>

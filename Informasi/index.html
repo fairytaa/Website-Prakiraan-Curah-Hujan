@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prediksi Cuaca di Pulau Sumatera</title>
+  <style>
+    /* Efek latar belakang cuaca */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      height: 100vh;
+      background: linear-gradient(to bottom, #87CEFA, #FFB6C1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #333;
+      position: relative;
+    }
+
+    /* Efek hujan */
+    .storm {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0;
+      overflow: hidden;
+      transition: opacity 0.5s;
+    }
+    .storm.active {
+      opacity: 1;
+    }
+    .storm .drop {
+      position: absolute;
+      width: 2px;
+      height: 15px;
+      background: rgba(173, 216, 230, 0.8);
+      animation: rain 0.5s linear infinite;
+    }
+
+    @keyframes rain {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(100%); }
+    }
+
+    /* Efek Awan bergerak */
+    .cloud {
+      position: absolute;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 300px;
+      height: 150px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: -50px 30px 0 -20px #fff, 50px 30px 0 -20px #fff;
+      z-index: 2;
+      animation: cloud-move 10s infinite linear;
+    }
+
+    @keyframes cloud-move {
+      0% { transform: translateX(-50%); }
+      100% { transform: translateX(50%); }
+    }
+
+    .container {
+      z-index: 3;
+      background: rgba(255, 255, 255, 0.95);
+      width: 80%;
+      max-width: 600px;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      animation: fade-in 1s ease-in-out;
+    }
+
+    @keyframes fade-in {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    h1 {
+      color: #FF4500;
+      margin-bottom: 20px;
+    }
+
+    select, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 16px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background-color: #FF6347;
+      color: white;
+      outline: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    select:hover, button:hover {
+      background-color: #FFD700;
+      color: #fff;
+    }
+
+    .result {
+      margin-top: 20px;
+      background: #FFFAF0;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .weather-icon {
+      width: 120px;
+      height: 120px;
+      margin-top: 15px;
+    }
+
+    .date {
+      font-size: 16px;
+      color: #555;
+      margin-top: 10px;
+    }
+
+    .time {
+      font-size: 14px;
+      color: #777;
+      margin-top: 5px;
+    }
+
+    .tip {
+      background-color: #f0f8ff;
+      padding: 10px;
+      margin-top: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      display: none;
+    }
+
+    /* Animasi ikon cuaca */
+    .sunny, .rainy, .cloudy {
+      display: none;
+    }
+
+    .tip.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="storm"></div>
+  <div class="cloud"></div>
+  <div class="container">
+    <h1>Prediksi Cuaca di Pulau Sumatera</h1>
+    
+    <!-- Menampilkan tanggal dan waktu real-time -->
+    <p id="current-date" class="date"></p>
+    <p id="current-time" class="time"></p>
+
+    <label for="city">Pilih Provinsi dan Kota/Kabupaten</label>
+    <select id="city">
+      <optgroup label="Aceh">
+        <option value="Banda Aceh">Banda Aceh</option>
+        <option value="Lhokseumawe">Lhokseumawe</option>
+        <option value="Langsa">Langsa</option>
+        <option value="Aceh Singkil">Aceh Singkil</option>
+      </optgroup>
+      <optgroup label="Sumatera Utara">
+        <option value="Medan">Medan</option>
+        <option value="Tanjung Balai">Tanjung Balai</option>
+        <option value="Binjai">Binjai</option>
+        <option value="Sibolga">Sibolga</option>
+      </optgroup>
+      <optgroup label="Sumatera Barat">
+        <option value="Padang">Padang</option>
+        <option value="Bukittinggi">Bukittinggi</option>
+        <option value="Payakumbuh">Payakumbuh</option>
+        <option value="Solok">Solok</option>
+      </optgroup>
+      <optgroup label="Riau">
+        <option value="Pekanbaru">Pekanbaru</option>
+        <option value="Dumai">Dumai</option>
+        <option value="Siak Sri Indrapura">Siak Sri Indrapura</option>
+        <option value="Rantauprapat">Rantauprapat</option>
+      </optgroup>
+      <optgroup label="Jambi">
+        <option value="Jambi">Jambi</option>
+        <option value="Muara Bungo">Muara Bungo</option>
+        <option value="Sungai Penuh">Sungai Penuh</option>
+      </optgroup>
+      <optgroup label="Sumatera Selatan">
+        <option value="Palembang">Palembang</option>
+        <option value="Baturaja">Baturaja</option>
+        <option value="Muara Enim">Muara Enim</option>
+      </optgroup>
+      <optgroup label="Bengkulu">
+        <option value="Bengkulu">Bengkulu</option>
+        <option value="Curup">Curup</option>
+        <option value="Mukomuko">Mukomuko</option>
+      </optgroup>
+      <optgroup label="Lampung">
+        <option value="Bandar Lampung">Bandar Lampung</option>
+        <option value="Metro">Metro</option>
+        <option value="Pringsewu">Pringsewu</option>
+      </optgroup>
+      <optgroup label="Kepulauan Riau">
+        <option value="Tanjung Pinang">Tanjung Pinang</option>
+        <option value="Batam">Batam</option>
+        <option value="Bintan">Bintan</option>
+      </optgroup>
+    </select>
+    <button onclick="getWeather()">Lihat Prediksi Cuaca</button>
+    <div id="result" class="result">
+      <p>Silakan pilih kota untuk melihat prediksi cuaca.</p>
+    </div>
+
+    <!-- Keterangan dan langkah yang harus dilakukan -->
+    <div id="tip" class="tip">
+      <p><strong>Langkah yang Harus Dilakukan:</strong></p>
+      <p id="advice"></p>
+    </div>
+  </div>
+
+  <script>
+    const apiKey = 'b2fa09799ba7a8a87279a52bfa97645c'; // API key Anda
+    const apiUrl = 'https://api.openweathermap.org/data/2.5/forecast'; // URL API OpenWeatherMap
+
+    function generateRainDrops() {
+      const stormElement = document.querySelector('.storm');
+      stormElement.innerHTML = '';
+
+      for (let i = 0; i < 100; i++) {
+        const drop = document.createElement('div');
+        drop.classList.add('drop');
+        drop.style.left = `${Math.random() * 100}%`;
+        drop.style.animationDelay = `${Math.random() * 0.5}s`;
+        stormElement.appendChild(drop);
+      }
+    }
+
+    function getCurrentTimeData() {
+      const currentHour = new Date().getHours();
+      const timeData = [];
+
+      for (let i = 0; i < 5; i++) {
+        const hour = (currentHour + i) % 24;
+        timeData.push(`${hour}:00`);
+      }
+
+      return timeData;
+    }
+
+    // Fungsi untuk menampilkan tanggal dan waktu real-time
+    function updateCurrentDate() {
+      const currentDateElement = document.getElementById("current-date");
+      const currentTimeElement = document.getElementById("current-time");
+      const currentDate = new Date();
+      const dayOfWeek = currentDate.toLocaleString("id-ID", { weekday: "long" });
+      const day = currentDate.getDate();
+      const month = currentDate.toLocaleString("id-ID", { month: "long" });
+      const year = currentDate.getFullYear();
+      const hours = currentDate.getHours();
+      const minutes = currentDate.getMinutes();
+      const seconds = currentDate.getSeconds();
+
+      currentDateElement.textContent = `${dayOfWeek}, ${day} ${month} ${year}`;
+      currentTimeElement.textContent = `${hours}:${minutes}:${seconds}`;
+    }
+
+    // Memperbarui tanggal dan waktu setiap detik
+    setInterval(updateCurrentDate, 1000);
+
+    async function getWeather() {
+      const city = document.getElementById('city').value;
+      const resultDiv = document.getElementById('result');
+      const tipDiv = document.getElementById('tip');
+      const adviceText = document.getElementById('advice');
+      const stormEffect = document.querySelector('.storm');
+
+      resultDiv.innerHTML = '<p>Sedang memuat...</p>';
+      tipDiv.style.display = 'none';
+      stormEffect.classList.add('active');
+      generateRainDrops();
+
+      try {
+        // Mengambil data cuaca dari API OpenWeatherMap
+        const response = await fetch(`${apiUrl}?q=${city}&appid=${apiKey}&units=metric&cnt=5`);
+        const data = await response.json();
+
+        if (data.cod !== '200') {
+          throw new Error('Data cuaca tidak ditemukan untuk kota ini.');
+        }
+
+        const weatherCondition = data.list[0].weather[0].main;
+        const temperatures = data.list.map(entry => entry.main.temp); // Suhu per jam
+        const timeData = getCurrentTimeData();
+
+        const weatherDisplay = temperatures.map((temp, index) => {
+          return `${timeData[index]}: ${temp}&#8451;`;
+        }).join('<br>');
+
+        resultDiv.innerHTML = `
+          <img src="https://openweathermap.org/img/wn/${data.list[0].weather[0].icon}.png" alt="Weather Icon" class="weather-icon">
+          <p>Kota: ${city}</p>
+          <p>Data Suhu:</p>
+          <p>${weatherDisplay}</p>
+        `;
+
+        // Menampilkan tips berdasarkan kondisi cuaca
+        const advice = getWeatherAdvice(weatherCondition);
+        adviceText.textContent = advice;
+        tipDiv.style.display = 'block';
+      } catch (error) {
+        resultDiv.innerHTML = `<p>Error: ${error.message}</p>`;
+      } finally {
+        setTimeout(() => stormEffect.classList.remove('active'), 3000);
+      }
+    }
+
+    function getWeatherAdvice(condition) {
+      switch (condition) {
+        case 'Clear':
+          return 'Cuaca cerah. Ideal untuk aktivitas luar ruangan.';
+        case 'Clouds':
+          return 'Cuaca berawan. Aktivitas luar ruangan masih aman.';
+        case 'Rain':
+          return 'Hujan. Jangan lupa bawa payung!';
+        case 'Thunderstorm':
+          return 'Badai petir. Hindari aktivitas luar ruangan!';
+        default:
+          return 'Cuaca tidak diketahui. Waspadai perubahan cuaca.';
+      }
+    }
+  </script>
+</body>
+</html>
