@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rainfall Forecast in Indonesia</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(to bottom, #ff9a9e, #fad0c4, #fbc2eb);
+            color: #2c3e50;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+            font-size: 2.8rem;
+            color: #fff;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            color: #fff;
+        }
+
+        .forecast-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .input-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-container input, .input-container button {
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .input-container input {
+            flex: 1;
+            background-color: #fff;
+            color: #2c3e50;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-container button {
+            background-color: #ff7675;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .input-container button:hover {
+            background-color: #e17055;
+            transform: scale(1.05);
+        }
+
+        .rain-animation {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            overflow: hidden;
+            perspective: 1000px;
+            border: 2px solid #fff;
+        }
+
+        .rain-animation .raindrop {
+            position: absolute;
+            width: 6px;
+            height: 20px;
+            background-color: #74b9ff;
+            opacity: 0.8;
+            border-radius: 3px;
+            animation: fall 2.5s linear infinite;
+        }
+
+        @keyframes fall {
+            from {
+                transform: translateY(-120px);
+            }
+            to {
+                transform: translateY(400px);
+            }
+        }
+
+        .output-data {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 15px 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .output-data table {
+            width: 100%;
+            border-collapse: collapse;
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .output-data table th {
+            background: #fab1a0;
+            color: #fff;
+            padding: 10px;
+        }
+
+        .output-data table td {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border: 1px solid rgba(200, 200, 200, 0.3);
+        }
+
+        .output-data table tr:nth-child(even) td {
+            background: rgba(255, 255, 255, 0.9);
+        }
+    </style>
+</head>
+<body>
+    <h1>Rainfall Forecast - Indonesia</h1>
+    <h2 id="currentDate"></h2>
+    <div class="forecast-container">
+        <div class="input-container">
+            <input type="text" id="region" placeholder="Enter Region (e.g., Jakarta)">
+            <button onclick="fetchForecast()">Get Forecast</button>
+        </div>
+        <div class="rain-animation" id="rainAnimation"></div>
+        <div class="output-data" id="outputData">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Rainfall (mm)</th>
+                        <th>Intensity</th>
+                        <th>Temperature (°C)</th>
+                        <th>Total Rainfall (mm)</th> <!-- Added total rainfall column -->
+                    </tr>
+                </thead>
+                <tbody id="forecastTable"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const rainAnimationContainer = document.getElementById('rainAnimation');
+
+        function createRaindrop() {
+            const raindrop = document.createElement('div');
+            raindrop.className = 'raindrop';
+            raindrop.style.left = Math.random() * 100 + '%';
+            raindrop.style.animationDuration = 2 + Math.random() * 1 + 's';
+            rainAnimationContainer.appendChild(raindrop);
+            setTimeout(() => raindrop.remove(), 3000);
+        }
+
+        setInterval(createRaindrop, 100);
+
+        function displayCurrentDate() {
+            const currentDateElem = document.getElementById('currentDate');
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            currentDateElem.textContent = now.toLocaleDateString('en-US', options);
+        }
+
+        async function fetchForecast() {
+            const region = document.getElementById('region').value.trim();
+            if (!region) {
+                alert('Please enter a region.');
+                return;
+            }
+
+            const apiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${region}&appid=b2fa09799ba7a8a87279a52bfa97645c&units=metric`;
+
+            try {
+                const response = await fetch(apiUrl);
+
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status} - ${response.statusText}`);
+                }
+
+                const data = await response.json();
+
+                if (data.cod !== "200") {
+                    throw new Error(data.message || 'Failed to fetch weather data.');
+                }
+
+                displayForecast(data);
+            } catch (error) {
+                alert('Error fetching weather data: ' + error.message);
+            }
+        }
+
+        function displayForecast(data) {
+            const forecastTable = document.getElementById('forecastTable');
+            forecastTable.innerHTML = ''; // Clear existing data
+
+            let totalRainfall = 0; // Variable to store total rainfall
+
+            // Loop through the first 5 time slots (you can adjust the number as needed)
+            data.list.slice(0, 5).forEach(item => {
+                const row = document.createElement('tr');
+                const time = new Date(item.dt * 1000).toLocaleTimeString();
+                const rainfall = item.rain ? item.rain['3h'] || 0 : 0;
+                totalRainfall += rainfall; // Integrating rainfall by summing it up
+
+                const intensity = rainfall > 10 ? 'High' : rainfall > 5 ? 'Moderate' : 'Low';
+                const temperature = item.main.temp.toFixed(1); // Get temperature and format it to 1 decimal place
+
+                // Create the row with time, rainfall, intensity, temperature, and total rainfall
+                row.innerHTML = `
+                    <td>${time}</td>
+                    <td>${rainfall.toFixed(2)}</td>
+                    <td>${intensity}</td>
+                    <td>${temperature} °C</td>
+                    <td>${totalRainfall.toFixed(2)}</td> <!-- Show integrated rainfall -->
+                `;
+                forecastTable.appendChild(row);
+            });
+        }
+
+        displayCurrentDate();
+    </script>
+</body>
+</html>
